@@ -1,7 +1,6 @@
 package com.learning.example.user.inventory.dto;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -17,11 +16,12 @@ public class UserDTO {
 	Date dateOfJoining;
 	Date dateOfBirth;
 	String email;
-	Integer phone;
+	String phone;
 	String role;
 	String manager;
 	RolesDTO roleDetails;
 	UserDTO managerDetails;
+	
 	public String getMessage() {
 		return message;
 	}
@@ -64,10 +64,10 @@ public class UserDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Integer getPhone() {
+	public String getPhone() {
 		return phone;
 	}
-	public void setPhone(Integer phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 	public String getRole() {
@@ -99,7 +99,7 @@ public class UserDTO {
 		// TODO Auto-generated constructor stub
 	}
 	public UserDTO(String message, String name, String id, Integer age, Date dateOfJoining, Date dateOfBirth,
-			String email, Integer phone, String role, String manager) {
+			String email, String phone, String role, String manager) {
 		super();
 		this.message = message;
 		this.name = name;
@@ -114,7 +114,7 @@ public class UserDTO {
 	
 	}
 	public UserDTO(String name, String id, Integer age, Date dateOfJoining, Date dateOfBirth, String email,
-			Integer phone, String role, String manager, RolesDTO roleDetails, UserDTO managerDetails) {
+			String phone, String role, String manager, RolesDTO roleDetails, UserDTO managerDetails) {
 		super();
 		this.name = name;
 		this.id = id;
@@ -134,8 +134,22 @@ public class UserDTO {
 	}
 	
 	
-	static public UserDetail convertUserDTOToEntity(UserDetail user, UserDTO dto, Map<String, Integer> rolesMap, UserRepository userDao) {
-		
+	static public UserDTO convertUserEntityToUserDTO(UserDetail user, UserDTO dto, RolesDTO roleDTO) {
+		dto.setAge(user.getAge());
+		dto.setDateOfBirth(user.getDateOfBirth());
+		dto.setDateOfJoining(user.getDateOfJoining());
+		dto.setEmail(user.getEmail());
+		dto.setId(user.getId());
+		if (user.getManager()!=null) {
+			dto.setManager(user.getManager().getId());
+		}
+		dto.setName(user.getName());
+		dto.setPhone(user.getPhoneNo());
+		dto.setRole(roleDTO.getName());
+		return dto;
+	}
+	
+	static public UserDetail convertUserDTOToEntity(UserDetail user, UserDTO dto, RolesDTO roleDTO, UserRepository userDao) {
 		
 		if(dto.getAge()!=null) {
 			user.setAge(dto.getAge());
@@ -160,18 +174,10 @@ public class UserDTO {
 		 * set the role to the user
 		 */
 		if(dto.getRole()!=null) {
-			user.setRoleId(UserDTO.getRoleId(rolesMap, dto.getRole()));
+			user.setRoleId(roleDTO.getId());
+			dto.setRoleDetails(roleDTO);
 		}
 		
-		/*
-		 * Set the rolesDTO
-		 */
-		
-		if(dto.getRole()!=null) {
-			RolesDTO rolesDTO = new RolesDTO();
-			dto = rolesDTO.getRolesDTO(dto, rolesMap);
-			user.setRoleId(rolesDTO.getId());
-		}
 		
 		/*
 		 * Set userId
@@ -182,19 +188,10 @@ public class UserDTO {
 		else {
 			user.setId(dto.getId());
 		}
-		/*
-		 * Set manager details
-		 */
-		if(dto.getManager()!=null) {
-			UserDetail adminUser = userDao.findFirstByRoleId(rolesMap.get("Administrator"));
-			UserDetail manager = UserDTO.getManager(dto, adminUser, userDao); 
-			user.setManager(manager);
-			dto.setManagerDetails(UserDTO.setManagerDetails(manager, dto.getManager()));
-		}
 		return user;
 	}
 	
-	static private UserDTO setManagerDetails(UserDetail manager, String managerName) {
+	public static UserDTO setManagerDetails(UserDetail manager, String managerName) {
 		UserDTO userDTO = new UserDTO();
 		if(manager!=null) {
 			userDTO.setAge(manager.getAge());
@@ -206,11 +203,7 @@ public class UserDTO {
 		return userDTO;
 	}
 	
-	static private Integer getRoleId(Map<String, Integer> rolesMap, String role) {
-		return rolesMap.containsKey(role)?rolesMap.get(role):null;
-	}
-	
-	static private String getUserId(UserDTO dto) {
+	static public String getUserId(UserDTO dto) {
 		String userId = new StringBuffer(dto.getRole().substring(0, 3).toUpperCase())
 				.append(String.valueOf(dto.getName().length()))
 				.append(dto.getName().charAt(1))
@@ -220,7 +213,7 @@ public class UserDTO {
 		
 	}
 	
-	static private UserDetail getManager(UserDTO dto, UserDetail adminUser, UserRepository userDao) {
+	static public UserDetail getManager(UserDTO dto, UserDetail adminUser, UserRepository userDao) {
 		UserDetail manager = null;
 		if (dto.getRole().equals("Employee")) {
 			Optional<UserDetail> managerOptional = userDao.findById(dto.getManager());

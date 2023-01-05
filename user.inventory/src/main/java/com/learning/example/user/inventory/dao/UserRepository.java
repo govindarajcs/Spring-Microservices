@@ -11,6 +11,6 @@ public interface UserRepository extends JpaRepository<UserDetail, String> {
 	
 	public List<UserDetail> findByEmail(String email);
 	
-	public List<UserDetail> findByPhoneNo(Integer phoneNo);
+	public List<UserDetail> findByPhoneNo(String phoneNo);
 
 }

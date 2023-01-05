@@ -65,7 +65,7 @@ public class EndpointService {
 				response = new ResponseEntity<EndpointResponse>(new EndpointResponse("Record id "+id+"doesn't exist"), HttpStatus.NOT_FOUND);
 			} else {
 				response = new ResponseEntity<EndpointResponse>(new EndpointResponse(endpoint.getSuffixPath(), endpoint.getId(), endpoint.getHttpMethod(), 
-						ServletUriComponentsBuilder.fromCurrentRequest().path("/").path(endpoint.getId().toString()).build().toUriString()), HttpStatus.OK);
+						ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString()), HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			response = new ResponseEntity<EndpointResponse> (new EndpointResponse("Cannot fetch details of teh record "+id+" due to "+e.getLocalizedMessage()),HttpStatus.INTERNAL_SERVER_ERROR);

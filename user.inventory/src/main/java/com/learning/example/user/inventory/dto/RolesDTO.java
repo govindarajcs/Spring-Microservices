@@ -1,7 +1,6 @@
 package com.learning.example.user.inventory.dto;
 
 import java.util.List;
-import java.util.Map;
 
 
 public class RolesDTO {
@@ -43,15 +42,4 @@ public class RolesDTO {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
-	public UserDTO getRolesDTO(UserDTO dto, Map<String, Integer> rolesMap) {
-		RolesDTO rolesDTO = new RolesDTO();
-		rolesDTO.setId(rolesMap.get(dto.getRole()));
-		rolesDTO.setName(dto.getRole());
-		rolesDTO.setPermissionDTOList(null);
-		dto.setRoleDetails(rolesDTO);
-		return dto;
-	}
-	
-
 }

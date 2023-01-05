@@ -79,7 +79,19 @@ public class RolesController {
 		return response;
 	}
 	
-	
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path= "/{name}")
+	public ResponseEntity<RoleDTO> getRoleByName(@PathVariable("name") String name) {
+		RoleDTO dto = service.getRoleDetailsByName(name);
+		ResponseEntity<RoleDTO> response = null;
+		if (dto!=null) {
+			response = new ResponseEntity<RoleDTO>(dto, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<RoleDTO>(HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
+
+		
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path= "/{id}")
 	public ResponseEntity<RoleDTO> getRole(@PathVariable("id") Integer id) {
 		RoleDTO dto = service.getRoleDetailsById(id);

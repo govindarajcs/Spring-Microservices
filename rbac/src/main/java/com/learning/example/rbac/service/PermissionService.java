@@ -149,8 +149,8 @@ public class PermissionService {
 		List<PermissionResponse> permissionResponseList = new ArrayList<>(); 
 		List<Permission> permissionList = dao.findAll();
 		for(Permission permission:permissionList) {
-			String rolePath = ServletUriComponentsBuilder.fromCurrentRequest().toString().split("permission")[0].concat("/role/").concat(permission.getRole().getId().toString());
-			String endpointPath = ServletUriComponentsBuilder.fromCurrentRequest().toString().split("permission")[0].concat("/role/").concat(permission.getService().getId().toString());
+			String rolePath = ServletUriComponentsBuilder.fromCurrentRequest().build().toString().split("permission")[0].concat("role/").concat(permission.getRole().getId().toString());
+			String endpointPath = ServletUriComponentsBuilder.fromCurrentRequest().build().toString().split("permission")[0].concat("endpoint/").concat(permission.getService().getId().toString());
 			PermissionResponse permissionResponse = new PermissionResponse(permission.getId(), permission.getPermission(),
 					ServletUriComponentsBuilder.fromCurrentRequest().path("/").path(permission.getService().getId().toString()).build().toUriString(), 
 					new EndpointResponse(permission.getService().getSuffixPath(), permission.getService().getId(), permission.getService().getHttpMethod(), endpointPath), 		

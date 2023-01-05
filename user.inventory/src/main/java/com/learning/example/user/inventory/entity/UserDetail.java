@@ -31,13 +31,16 @@ public class UserDetail implements Serializable {
 	
 	@Column(unique = true)
 	private String email;
+	
+	@Column(name="official_email",unique = true)
+	private String officialEmail;
 
 	private String name;
 
 	private String password;
 
 	@Column(name="phone_no")
-	private Integer phoneNo;
+	private String phoneNo;
 
 	@Column(name="role_id")
 	private Integer roleId;
@@ -71,6 +74,14 @@ public class UserDetail implements Serializable {
 	private Payroll payroll;
 
 	public UserDetail() {
+	}
+	
+	public String getOfficialEmail() {
+		return officialEmail;
+	}
+
+	public void setOfficialEmail(String officialEmail) {
+		this.officialEmail = officialEmail;
 	}
 
 	public String getId() {
@@ -129,11 +140,11 @@ public class UserDetail implements Serializable {
 		this.password = password;
 	}
 
-	public Integer getPhoneNo() {
+	public String getPhoneNo() {
 		return this.phoneNo;
 	}
 
-	public void setPhoneNo(Integer phoneNo) {
+	public void setPhoneNo(String phoneNo) {
 		this.phoneNo = phoneNo;
 	}
 
